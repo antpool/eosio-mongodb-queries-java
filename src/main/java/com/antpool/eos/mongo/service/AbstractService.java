@@ -29,8 +29,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractService<TDocument> {
     protected static final String DATABASE_NAME = "EOS";
 
-    protected MongoDatabase database;
-    protected JongoNative jongo;
+    private final MongoDatabase database;
     protected MongoCollection<TDocument> collection;
 
     public AbstractService(MongoClient mongoClient) {
@@ -39,7 +38,7 @@ public abstract class AbstractService<TDocument> {
 
     public AbstractService(MongoClient mongoClient, Mapper mapper) {
         this.database = mongoClient.getDatabase(DATABASE_NAME);
-        this.jongo = Jongo.useNative(mapper);
+        JongoNative jongo = Jongo.useNative(mapper);
         this.collection = jongo.wrap(database.getCollection(collectionName(), documentClass()));
     }
 
@@ -88,9 +87,5 @@ public abstract class AbstractService<TDocument> {
             return true;
         }
         return false;
-    }
-
-    protected Bson match(String query, Object... parameters) {
-        return jongo.query(query, parameters);
     }
 }

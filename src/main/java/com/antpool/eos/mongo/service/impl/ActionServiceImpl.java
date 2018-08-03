@@ -12,7 +12,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.jongo.Aggregate;
 import org.jongo.Mapper;
 
 import java.util.Arrays;
@@ -63,7 +62,7 @@ public class ActionServiceImpl extends AbstractService implements ActionService 
         // Get Reference Block Number from Transaction Id
         pipeline.add(Aggregates.graphLookup("transactions", "$trx_id", "trx_id", "trx_id", "transactions"));
 
-        withProject(pipeline, param);
+        withProject(pipeline);
 
         // Filter by Reference Block Number
         push(match("irreversible", param.getIrreversible()), pipeline);
@@ -94,7 +93,7 @@ public class ActionServiceImpl extends AbstractService implements ActionService 
     }
 
 
-    protected void withProject(List pipeline, ActionParam param) {
+    protected void withProject(List pipeline) {
         Bson project = Aggregates.project(Projections.fields(
                 Projections.include("_id", "action_num", "trx_id", "cfa", "account", "name", "authorization", "data"),
                 Projections.computed("irreversible", getArrayElemAtExpression("$transactions.irreversible")),

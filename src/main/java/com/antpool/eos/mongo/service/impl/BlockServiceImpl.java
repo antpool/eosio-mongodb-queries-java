@@ -44,8 +44,6 @@ public class BlockServiceImpl extends AbstractService implements BlockService {
         // MongoDB Pipeline
         List<Bson> pipeline = Lists.newArrayList();
 
-        // Match by data entries
-        // options.match //=> {"data.from": "eosio"}
         push(param.match(), pipeline);
 
         // Filter by Reference Block Number
